@@ -1,0 +1,340 @@
+/* Text styles */
+
+@font-face {
+    font-family: "Permanent Marker";
+    src: url("./assets/PermanentMarker-Regular.ttf");
+}
+
+@font-face {
+    font-family: "Oswald";
+    src: url("./assets/Oswald-Regular.ttf");
+}
+
+.italic {
+    font-style: oblique;
+}
+
+.textborder {
+    text-shadow: 3px 3px 5px #000000, -2px -2px 5px #000000, -2px 3px 5px #000000, 3px -2px 5px #000000;
+}
+
+.medsize {
+    font-size: 21px;
+}
+
+.basic {
+    font-family: "Permanent Marker";
+}
+
+.gray * {
+    color: #cbd0ce;
+}
+
+.gray {
+    color: #cbd0ce;
+}
+
+a {
+    text-decoration: none;
+}
+
+a[disabled]{
+    pointer-events: none;
+}
+
+.gray a[disabled]{
+    color: #676c6a;
+}
+
+.gray :is(a:hover, a:active):not(.logo):not([disabled]){
+    color: #c9c903;
+}
+
+.unselectable {
+    user-select: none;
+}
+
+/* Tags */
+img.presentation {
+    width: 100px;
+}
+
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    background: radial-gradient(circle at center, #404040, black);
+    margin: 0;
+}
+
+header {
+    z-index: 1;
+    background-position: center 45%;
+    background-image: url("./assets/space.jpeg");
+    position: fixed;
+    width: 100%;
+    height: 150px;
+}
+
+nav {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+nav ul {
+    background-color: #eeeeee94;
+    position: relative;
+    text-align: center;
+    right: 100px;
+    list-style: none;
+    padding: 0 35px;
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+    position: relative;
+    left: 110px;
+    bottom: 20px;
+}
+
+header .logo h1 {
+    position: relative;
+    left: 20px;
+    bottom: 20px;
+    font-size: 32px;
+}
+
+header .logo img {
+    width: 100px;
+    height: 100px;
+}
+
+main {
+    display: flex;
+    height: calc(100% - 150px);
+    width: 100%;
+    padding-top: 150px;
+}
+
+.vertical {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20%;
+}
+
+.product-types {
+    width: 90%;
+    flex: 10% 0 0;
+    background-image: url("./assets/space.jpeg");
+    background-position: center 45%;
+}
+
+.vertical ul.horizontal-list{
+    transform: translateY(-50%);
+}
+
+ul.horizontal-list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    list-style: none;
+}
+
+ul.horizontal-list li{
+    display: inline-block;
+}
+
+ul.horizontal-list li:first-child {
+    margin-left: 50px;
+}
+
+ul.horizontal-list li:last-child {
+    margin-right: 50px;
+}
+
+
+.presentation .description {
+    text-align: justify;
+    font-family: "Oswald";
+    font-size: 1.5vw;
+    padding: 25px;
+    padding-right: 50px;
+}
+
+.half {
+    width: 50%;
+}
+
+.presentation img {
+    object-fit: cover;
+    object-position: 50% 40%;
+    width: 100%;
+    height: 60%;
+}
+
+.menu {
+    margin-top: 5%;
+    margin-left: 3%;
+    position: fixed;
+    padding: 15px;
+    background-color: #fff;
+}
+
+div.products-list {
+    margin-top: 70px;
+    padding-bottom: 35px;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    column-gap: 13%;
+    row-gap: calc(5% + 70px);
+    margin-left: 20%;
+    width: 80%;
+    height: 100%;
+}
+
+div.product {
+    border: solid 1px #cbd0ce;
+    position: relative;
+    width: 25%;
+    height: 0;
+    padding-bottom: 25%;
+}
+
+div.fake-product {
+    border: none;
+    cursor: default;
+}
+
+.product:hover {
+    cursor: pointer;
+}
+
+div.products-list::before {
+    top: -70px;
+    content: "";
+    position: fixed;
+    width: 80%;
+    height: calc(100% + 70px);
+    background: radial-gradient(circle at center, #404040, black);
+    z-index: -1;
+}
+
+.child-input {
+    padding-left: 20px;
+}
+
+.product .properties-absolute {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    row-gap: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+.product .product-picture {
+    width: 75%;
+    height: 75%;
+    transform: translateY(-20px);
+}
+
+.product .product-picture img {
+    width: 100%;
+    height: 100%;
+}
+
+.product .product-picture .price {
+    font-size: 20px;
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+}
+
+.product h3.product-title {
+    margin: 0;
+    top: 75%;
+    transform: translateY(-10px);
+}
+
+.product .more-info {
+    font-family: 'Arial';
+    font-style: italic;
+    font-size: 18px;
+    text-decoration: underline;
+    align-self: end;
+    margin-right: 10px;
+}
+
+.product a.more-info::after {
+    content: "Plus d'info...";
+}
+
+body:not(.inhabitable-planets-checked) .inhabitable-planet {
+    display: none;
+}
+
+body:not(.not-inhabitable-planets-checked) .not-inhabitable-planet {
+    display: none;
+}
+
+body:not(.moons-checked) .moon {
+    display: none;
+}
+
+body:not(.stars-in-system-checked) .star-in-system {
+    display: none;
+}
+
+body:not(.stars-without-system-checked) .star-without-system {
+    display: none;
+}
+
+.popup {
+    z-index: 2;
+    justify-content: space-between;
+    width: 70vh;
+    height: 70vh;
+    padding: 50px;
+    row-gap: 50px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 40px;
+    text-align: justify;
+    text-indent: 10px;
+    color: #222222;
+}
+
+.popup button {
+    font-family: "Comic Sans MS";
+    padding: 0 2vh;
+    font-size: large;
+    border: solid 2px #333333;
+    border-radius: 40px;
+    background-color: black;
+    color: #abb0ae;
+}
+
+.error-message {
+    width: 71vw;
+    font-size: 5vw;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

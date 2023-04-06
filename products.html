@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Galaxy traders</title>
+        <link rel="icon" type="image/icon" href="./assets/favicon.ico">
+        <link rel="stylesheet" href="./style.css">
+        <script type="text/javascript" src="./script.js"></script>
+    </head>
+    <body>
+        <header>
+          <nav class="unselectable">
+            <a class="logo basic gray" href="./index.html">
+              <img src="./assets/logo.png">
+              <h1>Galaxy traders</h1>
+            </a>
+            <ul class="basic gray medsize">
+              <li><a href="./index.html">ACCUEIL</a></li>
+              <li><a disabled>PRODUITS</a></li>
+              <li><a href="./connection.html">SE CONNECTER</a></li>
+            </ul>
+          </nav>
+          </header>
+        <main>
+            <form class="menu basic italic unselectable">
+                <div>
+                    <div>
+                        <input id="planets" type="checkbox">
+                        <label for="planets">Planètes</label>
+                    </div>
+                        <div class="child-input">
+                            <input type="checkbox" id="inhabitable-planets">
+                            <label for="inhabitable-planets">Habitables</label>
+                        </div>
+                        <div class="child-input">
+                            <input type="checkbox" id="not-inhabitable-planets">
+                            <label for="not-inhabitable-planets" >Non habitables</label>
+                        </div>
+                        <div class="child-input">
+                            <input type="checkbox" id="moons">
+                            <label for="moons" >Lunes</label>
+                        </div>
+                </div>
+                <br>
+                <div>
+                    <div>
+                        <input id="stars" type="checkbox">
+                        <label for="stars">Étoiles</label>
+                    </div>
+                        <div class="child-input">
+                            <input type="checkbox" id="stars-in-system">
+                            <label for="stars-in-system">Avec système</label>
+                        </div>
+                        <div class="child-input">
+                            <input type="checkbox" id="stars-without-system">
+                            <label for="stars-without-system" >Sans système</label>
+                        </div>
+                </div>
+            </form>
+            <div class="products-list basic gray medsize">
+                
+            </div>
+        </main>
+    </body>
+</html>
