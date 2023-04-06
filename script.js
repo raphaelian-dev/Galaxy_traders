@@ -1,3 +1,4 @@
+// Updates the products' list with the api
 async function addAllProducts() {
     let response = await fetch('/api/getAllProductsHTML');
     let allProductsHTML = await response.text();
