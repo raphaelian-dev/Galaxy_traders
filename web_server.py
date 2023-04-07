@@ -49,6 +49,10 @@ class HTTPWebHandler(BaseHTTPRequestHandler):
             self.send_header('Location','/page_not_found.html')
             self.end_headers()
     def do_POST(self):
+        if '?' in self.path:
+                self.path = self.path.split('?')[0]
+        if self.path.startswith('/'):
+            self.path='.'+self.path
         if self.path == './api/addOrder':
             product_name = self.rfile.read()
             print(product_name)
