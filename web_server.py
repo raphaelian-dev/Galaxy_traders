@@ -64,12 +64,14 @@ class HTTPWebHandler(BaseHTTPRequestHandler):
                         count+=1
                 for i in range(count):
                     args.remove('')
-                    print(args)
+                print(args)
                 if db.add_order(*args):
                     self.send_response(204)
                 else:
+                    print('??')
                     self.send_response(400)
             except TypeError:
+                print('TypeError')
                 self.send_response(400)
             self.end_headers()
         elif self.path == './api/cancelOrder':

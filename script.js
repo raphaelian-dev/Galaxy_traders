@@ -37,7 +37,7 @@ function openOrderPopup(product) {
     orderPopup.action = '/api/addOrder';
     orderPopup.noValidate = false;
     orderPopup.insertAdjacentHTML('afterbegin', `
-    <input type="hidden" value=+`+product+`+ name="product-name" required>
+    <input type="hidden" value="`+product+`" name="product-name" required>
     <label for="email">Votre email *: </label>
     <input type="email" id="email"  name="email" required>
     <label for="name">Votre nom : </label>
