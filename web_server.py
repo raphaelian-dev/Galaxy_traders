@@ -6,6 +6,7 @@ import threading
 
 PORT = 8888
 
+db = api.Database('Galaxy_traders')
 
 class HTTPWebHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -28,11 +29,10 @@ class HTTPWebHandler(BaseHTTPRequestHandler):
             if self.path=='./':
                 self.path='./index.html'
             if self.path == './api/getAllProductsHTML':
-                db = api.Products_database('products')
+                all_products_HTML = db.get_all_products_HTML()
                 self.send_response(200)
                 self.send_header('content-type', 'text/html; charset=utf-8')
                 self.end_headers()
-                all_products_HTML = db.get_all_products_HTML()  
                 self.wfile.write(bytes(all_products_HTML, 'utf-8'))
                 return
             elif not (self.path in ('./index.html','./products.html','./page_not_found.html','./script.js','./style.css') or ((self.path.startswith('./assets/') or self.path.startswith('./images/')) and not self.path.endswith('/'))):
@@ -49,7 +49,20 @@ class HTTPWebHandler(BaseHTTPRequestHandler):
             self.send_header('Location','/page_not_found.html')
             self.end_headers()
     def do_POST(self):
-        return self.do_GET()
+        if self.path == './api/addOrder':
+            product_name = self.rfile.read()
+            print(product_name)
+            if db.add_order(product_name):
+                self.send_response(204)
+            else:
+                self.send_response(400)
+        elif self.path == './api/cancelOrder':
+            product_name = self.rfile.read()
+            print(product_name)
+            db.cancel_order(product_name)
+            self.send_response(204)
+        else:
+            self.do_GET()
 
 
 def stoping_thread_function():

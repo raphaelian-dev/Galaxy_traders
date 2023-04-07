@@ -53,7 +53,6 @@ function openpopup(content,color,productClass) {
 window.onload = async function() {
     if (document.querySelector('.products-list') != null) {
         await addAllProducts();
-        completeProductsList();
         // Synchronize the checkboxes
         var form = document.querySelectorAll('.menu > div');
         for (let i=0; i<form.length; i++){
@@ -92,6 +91,7 @@ window.onload = async function() {
                 } else {
                     if (this.checked) bodyClasses.add(checkedClass);
                 }
+                completeProductsList();
             })
         }
 
