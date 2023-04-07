@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler
 from socketserver import TCPServer
 import api
 import threading
-
+from sys import exit as sysexit
 
 PORT = 8888
 
@@ -54,17 +54,29 @@ class HTTPWebHandler(BaseHTTPRequestHandler):
         if self.path.startswith('/'):
             self.path='.'+self.path
         if self.path == './api/addOrder':
-            product_name = self.rfile.read()
-            print(product_name)
-            if db.add_order(product_name):
-                self.send_response(204)
-            else:
+            try:
+                args = self.rfile.read(int(self.headers.get('Content-Length'))).decode().replace('&', '\n').split('\n')
+                count=0
+                for i in range(len(args)):
+                    temp = args[i].split('=')
+                    args[i] = temp[-1]
+                    if args[i]=='':
+                        count+=1
+                for i in range(count):
+                    args.remove('')
+                    print(args)
+                if db.add_order(*args):
+                    self.send_response(204)
+                else:
+                    self.send_response(400)
+            except TypeError:
                 self.send_response(400)
+            self.end_headers()
         elif self.path == './api/cancelOrder':
-            product_name = self.rfile.read()
-            print(product_name)
+            product_name = self.rfile.read(int(self.headers.get('Content-Length'))).decode()
             db.cancel_order(product_name)
             self.send_response(204)
+            self.end_headers()
         else:
             self.do_GET()
 
@@ -75,6 +87,7 @@ def stoping_thread_function():
         continue
     httpd.server_close()
     httpd.shutdown()
+    sysexit()
 
 
 httpd = TCPServer(("", PORT), HTTPWebHandler)
@@ -84,3 +97,4 @@ print("serving at port", PORT)
 stoping_thread = threading.Thread(target=stoping_thread_function)
 stoping_thread.start()
 httpd.serve_forever()
+sysexit()

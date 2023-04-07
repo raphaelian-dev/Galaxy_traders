@@ -24,12 +24,47 @@ function completeProductsList() {
     }
 }
 
+function openOrderPopup(product) {
+    if (document.querySelector('.priority-background')!=null) document.querySelector('.priority-background').remove();
+    if (document.querySelector('.popup')!=null) document.querySelector('.popup').remove();
+    const bodyElement = document.querySelector('body');
+    let popup = document.createElement('div');
+    popup.classList.add('priority-background');
+    let orderPopup = document.createElement('form');
+    orderPopup.classList.add('order-form');
+    orderPopup.classList.add('vertical');
+    orderPopup.method = 'post';
+    orderPopup.action = '/api/addOrder';
+    orderPopup.noValidate = false;
+    orderPopup.insertAdjacentHTML('afterbegin', `
+    <input type="hidden" value=+`+product+`+ name="product-name" required>
+    <label for="email">Votre email *: </label>
+    <input type="email" id="email"  name="email" required>
+    <label for="name">Votre nom : </label>
+    <input type="text" id="name" name="name">
+    <label for="first-name">Votre prénom : </label>
+    <input type="text" id="first-name" name="first-name">
+    </br>
+    <input type="submit" id="order" value="Commander">
+    </br>
+    </br>
+    `);
+    popup.appendChild(orderPopup);
+    bodyElement.appendChild(popup);
+    let closeButton = document.createElement('button');
+    closeButton.classList.add('unselectable');
+    closeButton.append('Fermer');
+    closeButton.onclick = function (){
+        document.querySelector('.priority-background').remove();
+    }
+    orderPopup.appendChild(closeButton);
+}
 
 // Opens a central fixed div containing the text of the `content` parameter, with a radial gradient from the #f0f0f0 center to `color`
 function openpopup(content,color,productClass) {
     if (document.querySelector('.popup')!=null) document.querySelector('.popup').remove();
 
-    const mainElement = document.querySelector('main');
+    const bodyElement = document.querySelector('body');
     let popup = document.createElement('div');
     popup.classList.add('popup');
     popup.classList.add('vertical');
@@ -45,7 +80,7 @@ function openpopup(content,color,productClass) {
         document.querySelector('.popup').remove();
     }
     popup.appendChild(closeButton);
-    mainElement.appendChild(popup);
+    bodyElement.appendChild(popup);
 }
 
 

@@ -72,7 +72,7 @@ body {
 }
 
 header {
-    z-index: 1;
+    z-index: 2;
     background-position: center 45%;
     background-image: url("/assets/space.jpeg");
     position: fixed;
@@ -218,7 +218,7 @@ div.fake-product {
     cursor: default;
 }
 
-.product:hover {
+.product img {
     cursor: pointer;
 }
 
@@ -277,6 +277,7 @@ div.products-list::before {
     text-decoration: underline;
     align-self: end;
     margin-right: 10px;
+    cursor: pointer;
 }
 
 .product a.more-info::after {
@@ -304,7 +305,7 @@ body:not(.stars-without-system-checked) .star-without-system {
 }
 
 .popup {
-    z-index: 2;
+    z-index: 3;
     justify-content: space-between;
     width: 70vh;
     height: 70vh;
@@ -337,4 +338,39 @@ body:not(.stars-without-system-checked) .star-without-system {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.priority-background {
+    top: 0;
+    left:0;
+    background-color: #000000AA;
+    z-index: 4;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+.order-form {
+    font-family: "Permanent Marker";
+    font-size: 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px 30px;
+    border-radius: 30px;
+}
+
+.order-form input{
+    width: 250px;
+    height: 20px;
+}
+
+.order-form input[type="submit"]{
+    border-radius: 20px;
+    width: 200px;
+    height: 50px;
+    font-size: 20px;
+    font-family: "Permanent Marker";
 }

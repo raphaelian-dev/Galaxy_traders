@@ -45,7 +45,8 @@ SELECT * FROM products ORDER BY price
         for i in products:
             type_name = self.types[i[2]]
             name = i[0]
-            HTML_code += '<div class="product '+type_name+'" onclick="openpopup(\''+i[4]+'\',\''+i[5]+'\',\''+type_name+'\')"><div class="properties-absolute"><div class="product-picture"><img src="/images/'+name+'.'+i[1]+'"><div class="price">'+str(i[3])+' STR</div></div><h3 class="product-title">'+name+'</h3><a class="more-info"></a></div></div>'
+            openpopup = 'onclick="openpopup(\''+i[4]+'\',\''+i[5]+'\',\''+type_name+'\')"'
+            HTML_code += '<div class="product '+type_name+'"><div class="properties-absolute"><div class="product-picture"><img src="/images/'+name+'.'+i[1]+'" onclick="openOrderPopup(\''+name+'\')"><div class="price">'+str(i[3])+' STR</div></div><h3 class="product-title">'+name+'</h3><a class="more-info" '+openpopup+'></a></div></div>'
         return HTML_code
     #
     def add_product(self, name:str, imageExtension:str, product_type:int, price:int, description:str='We do not know much yet about this celestial body.', color:str='#808080') -> bool:
@@ -98,13 +99,17 @@ VALUES ("""+str(values)[1:-1]+""")
     def cancel_order(self, product_name:str):
         cursor = self.db.cursor()
         cursor.execute("""
-SELECT  productName, imageExtension, type, price, description, color FROM orders WHERE productName='"""+product_name+"""'
+SELECT  * FROM orders WHERE productName='"""+product_name+"""'
 """)
         product = cursor.fetchone()
         if not product:
             return
+        product = list(product)
+        product[4] = product[4].replace('\\','')
+        product[0] = product[0].replace('\\','')
         self.add_product(*product)
         cursor.execute("""
 DELETE FROM orders WHERE productName='"""+product_name+"""'
 """)
         self.db.commit()
+        
