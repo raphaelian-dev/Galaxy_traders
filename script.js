@@ -24,6 +24,22 @@ function completeProductsList() {
     }
 }
 
+async function order() {
+    if (document.querySelector('.order-form') != null) {
+        let message = document.getElementById('product-name').value+'\n'+document.getElementById('email').value;
+        let name = document.getElementById('name').value;
+        let firstName = document.getElementById('first-name').value;
+        if (name != '') message += '\n' + name;
+        if (firstName != '') message += '\n' + firstName;
+        await fetch('/api/addOrder', {
+            method: 'POST',
+            body: message
+        });
+        document.location.pathname = '/products.html';
+
+    }
+}
+
 function openOrderPopup(product) {
     if (document.querySelector('.priority-background')!=null) document.querySelector('.priority-background').remove();
     if (document.querySelector('.popup')!=null) document.querySelector('.popup').remove();
@@ -31,13 +47,12 @@ function openOrderPopup(product) {
     let popup = document.createElement('div');
     popup.classList.add('priority-background');
     let orderPopup = document.createElement('form');
+    orderPopup.action = 'javascript:order()';
+    orderPopup.noValidate = false;
     orderPopup.classList.add('order-form');
     orderPopup.classList.add('vertical');
-    orderPopup.method = 'post';
-    orderPopup.action = '/api/addOrder';
-    orderPopup.noValidate = false;
     orderPopup.insertAdjacentHTML('afterbegin', `
-    <input type="hidden" value="`+product+`" name="product-name" required>
+    <input type="hidden" value="`+product+`" name="product-name" id="product-name" required>
     <label for="email">Votre email *: </label>
     <input type="email" id="email"  name="email" required>
     <label for="name">Votre nom : </label>

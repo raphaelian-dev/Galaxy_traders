@@ -55,23 +55,12 @@ class HTTPWebHandler(BaseHTTPRequestHandler):
             self.path='.'+self.path
         if self.path == './api/addOrder':
             try:
-                args = self.rfile.read(int(self.headers.get('Content-Length'))).decode().replace('&', '\n').split('\n')
-                count=0
-                for i in range(len(args)):
-                    temp = args[i].split('=')
-                    args[i] = temp[-1]
-                    if args[i]=='':
-                        count+=1
-                for i in range(count):
-                    args.remove('')
-                print(args)
+                args = self.rfile.read(int(self.headers.get('Content-Length'))).decode().split('\n')
                 if db.add_order(*args):
                     self.send_response(204)
                 else:
-                    print('??')
                     self.send_response(400)
             except TypeError:
-                print('TypeError')
                 self.send_response(400)
             self.end_headers()
         elif self.path == './api/cancelOrder':

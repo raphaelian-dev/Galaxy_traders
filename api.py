@@ -1,4 +1,5 @@
 import sqlite3
+import hashlib
 
 class Database():
     #
@@ -30,6 +31,17 @@ CREATE TABLE IF NOT EXISTS orders
     color CHAR(6) DEFAULT '#808080'
 )
 """)
+        cursor.execute("""
+CREATE TABLE IF NOT EXISTS users
+(
+    email VARCHAR(320) PRIMARY KEY NOT NULL,
+    hashedPassword VARCHAR(32) NOT NULL,
+    name VARCHAR(50),
+    firstName VARCHAR(50),
+    permissionLevel INT DEFAULT 0,
+    certified INT DEFAULT 0
+)
+""")
         self.db.commit()
     def get_all_products(self) -> list:
         cursor = self.db.cursor()
@@ -50,7 +62,7 @@ SELECT * FROM products ORDER BY price
         return HTML_code
     #
     def add_product(self, name:str, imageExtension:str, product_type:int, price:int, description:str='We do not know much yet about this celestial body.', color:str='#808080') -> bool:
-        if None in (name,product_type,price) or product_type>=len(self.types):
+        if None in (name,product_type,price) or '' in (name,product_type,price) or product_type>=len(self.types):
             return False
         name = name.replace("'", "\\'")
         description = description.replace("'", "\\'")
@@ -76,8 +88,9 @@ SELECT * FROM products WHERE name='"""+product_name+"""'
         product = cursor.fetchone()
         if not product:
             return False
-        if None in (product_name, email):
+        if None in (product_name, email) or '' in (product_name, email):
             return False
+        email = email.replace('%40', '@')
         keys = 'productName, email, imageExtension, type, price, description, color'
         values = [product_name, email]+list(product[1:])
         if name != None:
@@ -99,7 +112,7 @@ VALUES ("""+str(values)[1:-1]+""")
     def cancel_order(self, product_name:str):
         cursor = self.db.cursor()
         cursor.execute("""
-SELECT  * FROM orders WHERE productName='"""+product_name+"""'
+SELECT productName, imageExtension, type, price, description, color FROM orders WHERE productName='"""+product_name+"""'
 """)
         product = cursor.fetchone()
         if not product:
@@ -112,4 +125,30 @@ SELECT  * FROM orders WHERE productName='"""+product_name+"""'
 DELETE FROM orders WHERE productName='"""+product_name+"""'
 """)
         self.db.commit()
-        
+    #
+    def add_user(self, email:str, password:str, name:str=None, first_name:str=None) -> int:
+        cursor = self.db.cursor()
+        if None in (email, password) or '' in (email, password):
+            return -1
+        cursor.execute("SELECT email FROM users WHERE email='"+email+"'")
+        if cursor.fetchone():
+            return 1
+        hashed_password = hash_password(password)
+        keys = 'email, hashedPassword'
+        values = [email, hashed_password]
+        if name != None:
+            keys += ', name'
+            values.append(name)
+        if first_name!=None:
+            keys += ', firstName'
+            values.append(first_name)
+        cursor.execute("""
+INSERT INTO users ("""+keys+""")
+VALUES ("""+str(values)[1:-1]+""")
+""")
+        self.db.commit()
+        return 0
+
+
+def hash_password(pswd):
+    return hashlib.sha256(pswd.encode()).hexdigest()
