@@ -146,12 +146,13 @@ window.onload = async function() {
         }
 
         // Complete the checkboxes according to if the page was accessed from the buttons corresponding to the planets or the stars only
-        query = window.location.search.substring(1);
-        if (query=='planets'){
+        query = window.location.hash.substring(1);
+        window.location.hash='';
+        if (query=='planetsonly' || query=='planets'){
             planetsInput = document.querySelector('#planets');
             planetsInput.checked = true;
             planetsInput.onchange();
-        } else if (query=='stars') {
+        } else if (query=='starsonly' || query=='stars') {
             starsInput = document.querySelector('#stars');
             starsInput.checked = true;
             starsInput.onchange();
