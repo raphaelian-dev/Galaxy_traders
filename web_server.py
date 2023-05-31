@@ -37,7 +37,7 @@ class HTTPWebHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(bytes(all_products_HTML, 'utf-8'))
                 return
-            elif not (self.path in ('./index.html','./products.html','./page_not_found.html',"connection.html",'./script.js','./style.css') or ((self.path.startswith('./assets/') or self.path.startswith('./images/')) and not self.path.endswith('/'))):
+            elif not (self.path in ('./index.html','./products.html','./page_not_found.html','./connection.html','./script.js','./style.css') or ((self.path.startswith('./assets/') or self.path.startswith('./images/')) and not self.path.endswith('/'))):
                 raise FileNotFoundError
             content_type = content_types[self.path.split('.')[-1]]
             # Open the file
