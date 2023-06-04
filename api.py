@@ -160,28 +160,35 @@ VALUES ("""+str(values)[1:-1]+""")
 """)
         self.db.commit()
         return 0
-    # Returns True if given password is correct for the user with given email, else False.
-    def check_password(self, email:str, password:str) -> bool:
-        hashed_password = hash_password(password)
+    # Returns None if user does not exist, else returns True if given password is correct for the user with given email, else False.
+    def check_password(self, email:str, password:str) -> bool|None:
         cursor = self.db.cursor()
+        hashed_password = hash_password(password)
         cursor.execute("SELECT hashedPassword FROM users WHERE email='"+email+"'")
         real_hashed_tuple = cursor.fetchone()
         if real_hashed_tuple == None:
-            return False
-        return hashed_password == real_hashed_tuple[0]
-    # Registers a user session identifiable by its 32 characters random ascii string. Returns None in case of wrong password else returns the generated id.
-    def create_session(self, email:str, password:str) -> str|None:
-        if self.check_password(email, password):
-            cursor = self.db.cursor()
-            session = random_asciistr_32()
-            print(session)
-            while not cursor.execute("SELECT session FROM users WHERE session='"+session+"'"):
-                session = random_asciistr_32()
-            cursor.execute("UPDATE users SET session='"+session+"',sessiondate='"+datestr()+"' WHERE email='"+email+"'")
-            self.db.commit()
-            return session
-        else:
             return None
+        return hashed_password == real_hashed_tuple[0]
+    # TODO : Hash of sessions. PS : hash is 32*16 and sessions' IDs are 32*93.
+    # Registers a user session identifiable by its 32 characters random ascii string. Returns the generated ID.
+    def create_session(self, email:str) -> str:
+        cursor = self.db.cursor()
+        session = random_asciistr_32()
+        while cursor.execute("SELECT session FROM users WHERE session='"+session+"'").fetchone():
+            session = random_asciistr_32()
+            print("Incredible coincidence !")
+        cursor.execute("UPDATE users SET session='"+session+"',sessiondate='"+datestr()+"' WHERE email='"+email+"'")
+        self.db.commit()
+        return session
+    # Create a session for given user if the given password is correct. Returns 1 in case of wrong password, -1 if user does not exist, or else returns the generated session's ID.
+    def connect_user(self, email:str, password:str) -> str|int:
+        password_correct = self.check_password(email, password)
+        if password_correct:
+            return self.create_session(email)
+        elif password_correct == False:
+            return 1
+        else:
+            return -1
     # Deletes a user session.
     def delete_session(self, session:str):
         cursor = self.db.cursor()
