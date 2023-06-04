@@ -4,7 +4,7 @@ import api
 import threading
 from sys import exit as sysexit
 
-PORT = 8880
+PORT = 8888
 
 db = api.Database('Galaxy_traders')
 
