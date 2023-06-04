@@ -194,7 +194,7 @@ VALUES ("""+str(values)[1:-1]+""")
         cursor = self.db.cursor()
         cursor.execute("UPDATE users SET session=NULL, sessiondate=NULL WHERE session='"+session+"'")
         self.db.commit()
-    # Checks if user session is valid. Returns session user's email if so, else None.
+    # Checks if user session is valid. Returns session user's email if so, else if it is just expired "expired", else None.
     def check_session(self, session:str) -> str|None:
         cursor = self.db.cursor()
         session_attributes = cursor.execute("SELECT email, sessiondate FROM users WHERE session='"+session+"'").fetchone()
@@ -203,7 +203,7 @@ VALUES ("""+str(values)[1:-1]+""")
         email, sessiondate = session_attributes
         if sessiondate != datestr():
             self.delete_session(session)
-            return None
+            return 'expired'
         return email
 
 
