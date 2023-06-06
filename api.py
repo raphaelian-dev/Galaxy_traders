@@ -4,7 +4,7 @@ from random import choices
 from string import ascii_letters, digits, punctuation
 characters = list(ascii_letters + digits + punctuation)
 characters.remove("'")
-from datetime import date
+from datetime import datetime, timedelta
 
 class Database():
     # Inits the python object. It has as a property a object which can be use to access the database located in the file of given name plus the .db extension. Creates if they do not exist the data tables for the products, the orders and the users.
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS users
     permissionLevel INT DEFAULT 0,
     certified INT DEFAULT 0,
     session VARCHAR(32),
-    sessiondate CHAR(7)
+    sessiondate CHAR(14)
 )
 """)
         self.db.commit()
@@ -201,7 +201,7 @@ VALUES ("""+str(values)[1:-1]+""")
         if session_attributes == None:
             return -1
         email, sessiondate = session_attributes
-        if sessiondate != datestr():
+        if int(sessiondate) < int(datestr()):
             self.delete_session(session)
             return 1
         return email
@@ -214,4 +214,4 @@ def random_asciistr_32() -> str:
     return "".join(choices(characters, k=32))
 
 def datestr() -> str:
-    return str(date.today()).replace('-','')
+    return str(datetime.today()+timedelta(hours=24)).replace('-', '').replace(' ', '').replace(':', '').split('.')[0]
