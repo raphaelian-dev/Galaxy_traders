@@ -169,6 +169,7 @@ VALUES ("""+str(values)[1:-1]+""")
         if real_hashed_tuple == None:
             return None
         return hashed_password == real_hashed_tuple[0]
+    # --- Operations on user session
     # Registers a user session identifiable by its 32 characters random ascii string. Returns the generated ID.
     def create_session(self, email:str) -> str:
         cursor = self.db.cursor()
