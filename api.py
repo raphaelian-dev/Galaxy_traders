@@ -7,8 +7,10 @@ characters.remove("'")
 from datetime import datetime, timedelta
 
 class Database():
+    VERIFIED = 1
+    OPERATOR = 8
+    ADMINISTRATOR = 15
     # --- Creation or loading of the database
-    # ! IMPORTANT ! Permission levels are : 0 -> None, 1 -> Verified email, 8 -> Operator, 15 -> Administrator.
     def __init__(self, db_name:str):
         """Inits the python object. It has as a property a object which can be use to access the database located in the file of given name plus the .db extension. Creates if they do not exist the data tables for the products, the orders and the users."""
         self.types=('inhabitable-planet','not-inhabitable-planet','moon','star-in-system','star-without-system')
@@ -231,7 +233,13 @@ VALUES ("""+str(values)[1:-1]+""")
             return 1
         return email
     #
+    def set_permissions(self, email:str, permission_level:int) -> None:
+        """Set the permission level's corresponding integer of the given email's user."""
+        cursor = self.db.cursor()
+        cursor.execute("UPDATE users SET permissionLevel="+str(permission_level)+" WHERE email='"+email+"'")
+    #
     def get_permissions(self, email:str) -> int:
+        """Returns the integer corresponding to the permission level of the given email's user."""
         cursor = self.db.cursor()
         cursor.execute("SELECT permissionLevel FROM users WHERE email='"+email+"'")
         permission_level = cursor.fetchone()
@@ -240,16 +248,20 @@ VALUES ("""+str(values)[1:-1]+""")
         return permission_level
     #
     def is_unverified(self, email:str) -> bool:
-        return self.get_permissions(email)<=0
+        """Returns True if the give email has not the permission level VERIFIED, otherwise False."""
+        return self.get_permissions(email)<self.VERIFIED
     #
     def is_verified(self, email:str) -> bool:
-        return self.get_permissions(email)>0
+        """Returns True if the give email has the permission level VERIFIED, otherwise False."""
+        return self.get_permissions(email)>=self.VERIFIED
     #
     def is_operator(self, email:str) -> bool:
-        return self.get_permissions(email)>=8
+        """Returns True if the give email has the permission level OPERATOR, otherwise False."""
+        return self.get_permissions(email)>=self.OPERATOR
     #
-    def is_admin(self, email:str) -> bool:
-        return self.get_permissions(email)>=15
+    def is_administrator(self, email:str) -> bool:
+        """Returns True if the give email has the permission level ADMINISTRATOR, otherwise False."""
+        return self.get_permissions(email)>=self.ADMINISTRATOR
 
 #
 def hash_password(pswd:str) -> str:
