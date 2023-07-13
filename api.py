@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 
 class Database():
     # --- Creation or loading of the database
+    # ! IMPORTANT ! Permission levels are : 0 -> None, 1 -> Verified email, 8 -> Operator, 15 -> Administrator.
     def __init__(self, db_name:str):
         """Inits the python object. It has as a property a object which can be use to access the database located in the file of given name plus the .db extension. Creates if they do not exist the data tables for the products, the orders and the users."""
         self.types=('inhabitable-planet','not-inhabitable-planet','moon','star-in-system','star-without-system')
@@ -94,9 +95,11 @@ DELETE FROM products WHERE name='"""+name+"""'
 """)
         self.db.commit()
     # --- Operations on the orders table of the database. ---
-    def add_order(self, product_name:str, session:str) -> bool:
+    def add_order(self, product_name:str, session:str) -> int:
         """Registers an order to the database. Return True if operation successful, else False."""
         email = self.check_session(session)
+        if not type(email)==str or self.is_unverified(email):
+            return False
         if type(email) == str:
             cursor = self.db.cursor()
             cursor.execute("SELECT name, firstName FROM users WHERE email='"+email+"'")
@@ -107,10 +110,7 @@ DELETE FROM products WHERE name='"""+name+"""'
     """)
             product = cursor.fetchone()
             if not product:
-                return False
-            if None in (product_name, email) or '' in (product_name, email):
-                return False
-            email = email.replace('%40', '@')
+                return 2
             keys = 'productName, email, imageExtension, type, price, description, color'
             values = [product_name, email]+list(product[1:])
             if name != None:
@@ -129,17 +129,23 @@ DELETE FROM products WHERE name='"""+name+"""'
             self.remove_product(product_name)
             return True
         else:
-            return False
+            return 1
     #
-    def cancel_order(self, product_name:str) -> None:
-        """Cancels an order registered in the database. Does not return anything, and does nothing if order does not exist."""
+    def cancel_order(self, product_name:str, session:str) -> bool:
+        """Cancels an order registered in the database. Returns True if successful or if order does not exist and False if user does not have the permssion to do this."""
+        email = self.check_session(session)
+        if not type(email)==str:
+            return False
         cursor = self.db.cursor()
+        cursor.execute("SELECT email FROM orders WHERE productName='"+product_name+"'")
+        if (email != cursor.fetchone() and not self.is_operator(email)):
+            return False
         cursor.execute("""
 SELECT productName, imageExtension, type, price, description, color FROM orders WHERE productName='"""+product_name+"""'
 """)
         product = cursor.fetchone()
         if not product:
-            return
+            return True
         product = list(product)
         product[4] = product[4].replace('\\','')
         product[0] = product[0].replace('\\','')
@@ -148,6 +154,7 @@ SELECT productName, imageExtension, type, price, description, color FROM orders 
 DELETE FROM orders WHERE productName='"""+product_name+"""'
 """)
         self.db.commit()
+        return True
     # --- Operations on the users table of the database. ---
     def add_user(self, email:str, password:str, name:str|None=None, first_name:str|None=None) -> int:
         """Registers a user to the database. Returns -1 if no email or password given, 1 if user already exists or 0 if operation successful."""
@@ -223,16 +230,40 @@ VALUES ("""+str(values)[1:-1]+""")
             self.delete_session(session)
             return 1
         return email
+    #
+    def get_permissions(self, email:str) -> int:
+        cursor = self.db.cursor()
+        cursor.execute("SELECT permissionLevel FROM users WHERE email='"+email+"'")
+        permission_level = cursor.fetchone()
+        if permission_level == None:
+            permission_level = 0
+        return permission_level
+    #
+    def is_unverified(self, email:str) -> bool:
+        return self.get_permissions(email)<=0
+    #
+    def is_verified(self, email:str) -> bool:
+        return self.get_permissions(email)>0
+    #
+    def is_operator(self, email:str) -> bool:
+        return self.get_permissions(email)>=8
+    #
+    def is_admin(self, email:str) -> bool:
+        return self.get_permissions(email)>=15
 
-
+#
 def hash_password(pswd:str) -> str:
+    """Returns the sha256 hashed version of a str."""
     return hashlib.sha256(pswd.encode()).hexdigest()
-
+#
 def random_asciistr_32() -> str:
+    """Returns a random 32 characters long str."""
     return "".join(choices(characters, k=32))
-
+#
 def datestr() -> str:
+    """Returns the actual date, with format 'YYYYMMDDhhmmss'."""
     return str(datetime.today()).replace('-', '').replace(' ', '').replace(':', '').split('.')[0]
-
+#
 def enddatestr() -> str:
+    """Returns the date corresponding to 24 hours after the execution, with format 'YYYYMMDDhhmmss'."""
     return str(datetime.today()+timedelta(hours=24)).replace('-', '').replace(' ', '').replace(':', '').split('.')[0]
