@@ -118,6 +118,7 @@ header .logo img {
 }
 
 main {
+    position: fixed;
     display: flex;
     height: calc(100% - 150px);
     width: 100%;
@@ -183,17 +184,21 @@ ul.horizontal-list li:last-child {
     height: 60%;
 }
 
+.scrollable {
+    position: relative;
+    overflow-y: scroll;
+}
+
 .menu {
+    position: fixed;
     margin-top: 5%;
     margin-left: 3%;
-    position: fixed;
     padding: 15px;
     background-color: #fff;
 }
 
 div.products-list {
-    margin-top: 70px;
-    padding-bottom: 35px;
+    padding-top: 70px;
     position: relative;
     display: flex;
     flex-wrap: wrap;
@@ -202,7 +207,8 @@ div.products-list {
     row-gap: calc(5% + 70px);
     margin-left: 20%;
     width: 80%;
-    height: 100%;
+    height: 85%;
+    padding-bottom: 20%;
 }
 
 div.product {

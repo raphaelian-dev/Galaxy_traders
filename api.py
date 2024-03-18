@@ -97,14 +97,14 @@ DELETE FROM products WHERE name='"""+name+"""'
 """)
         self.db.commit()
     # --- Operations on the orders table of the database. ---
-    def add_order(self, product_name:str, session:str) -> int:
+    def add_order(self, product_name:str, session:str) -> bool:
         """Registers an order to the database. Return True if operation successful, else False."""
         email = self.check_session(session)
-        if not type(email)==str or self.is_unverified(email):
+        if not type(email)==str or self.is_unverified(email): # type: ignore
             return False
         if type(email) == str:
             cursor = self.db.cursor()
-            cursor.execute("SELECT name, firstName FROM users WHERE email='"+email+"'")
+            cursor.execute("SELECT name, firstName FROM users WHERE email='"+email+"'") # type: ignore
             name, first_name = cursor.fetchone()
             print(email, name, first_name)
             cursor.execute("""
@@ -134,13 +134,13 @@ DELETE FROM products WHERE name='"""+name+"""'
             return False
     #
     def cancel_order(self, product_name:str, session:str) -> bool:
-        """Cancels an order registered in the database. Returns True if successful or if order does not exist and False if user does not have the permssion to do this."""
+        """Cancels an order registered in the database. Returns True if successful or if order does not exist and False if user does not have the permission to do this."""
         email = self.check_session(session)
         if not type(email)==str:
             return False
         cursor = self.db.cursor()
         cursor.execute("SELECT email FROM orders WHERE productName='"+product_name+"'")
-        if (email != cursor.fetchone() and not self.is_operator(email)):
+        if (email != cursor.fetchone() and not self.is_operator(email)): # type: ignore
             return False
         cursor.execute("""
 SELECT productName, imageExtension, type, price, description, color FROM orders WHERE productName='"""+product_name+"""'
@@ -222,7 +222,7 @@ VALUES ("""+str(values)[1:-1]+""")
         self.db.commit()
     #
     def check_session(self, session:str) -> str|int:
-        """Checks if user session is valid. Returns session user's email if so, or else if it is expired returns 1, otherwise -1."""
+        """Checks if user session is valid. Returns session user's email if so, or else, if it is expired, returns 1, otherwise, -1."""
         cursor = self.db.cursor()
         session_attributes = cursor.execute("SELECT email, sessiondate FROM users WHERE hashedsession='"+hash_password(session)+"'").fetchone()
         if session_attributes == None:

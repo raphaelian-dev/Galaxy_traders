@@ -47,9 +47,11 @@ class HTTPWebHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(file.read()) # Read the file and send the contents
         except FileNotFoundError:
-            self.send_response(301)
-            self.send_header('Location','/page_not_found.html')
+            self.send_response(404)
+            self.send_header('content-type','text/html')
             self.end_headers()
+            with open('page_not_found.html', 'rb') as file:
+                self.wfile.write(file.read())
     def do_POST(self):
         if '?' in self.path:
                 self.path = self.path.split('?')[0]
@@ -68,8 +70,8 @@ class HTTPWebHandler(BaseHTTPRequestHandler):
                 self.send_response(400)
             self.end_headers()
         elif self.path == './api/cancelOrder':
-            product_name = self.rfile.read(int(self.headers.get('Content-Length'))).decode()
-            db.cancel_order(product_name)
+            args = self.rfile.read(int(self.headers.get('Content-Length'))).decode().split("\n")
+            db.cancel_order(*args)
             self.send_response(204)
             self.end_headers()
         else:
