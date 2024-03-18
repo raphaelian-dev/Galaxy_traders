@@ -223,6 +223,7 @@ div.fake-product {
     border-radius: 5%;
 }
 
+
 div.products-list::before {
     top: -70px;
     content: "";
@@ -374,4 +375,11 @@ body:not(.stars-without-system-checked) .star-without-system {
     height: 50px;
     font-size: 20px;
     font-family: "Permanent Marker";
+}
+
+.input-img {
+    width: 60%;
+    height: 70%;
+    margin-top: 5%;
+    margin-left: 7%;
 }
