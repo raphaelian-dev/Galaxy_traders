@@ -78,7 +78,7 @@ class HTTPWebHandler(BaseHTTPRequestHandler):
 
 def stoping_thread_function():
     global httpd
-    while input()!='exit':
+    while input()!='stop':
         continue
     httpd.server_close()
     httpd.shutdown()

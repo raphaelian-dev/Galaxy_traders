@@ -112,7 +112,7 @@ DELETE FROM products WHERE name='"""+name+"""'
     """)
             product = cursor.fetchone()
             if not product:
-                return 2
+                return False
             keys = 'productName, email, imageExtension, type, price, description, color'
             values = [product_name, email]+list(product[1:])
             if name != None:
@@ -131,7 +131,7 @@ DELETE FROM products WHERE name='"""+name+"""'
             self.remove_product(product_name)
             return True
         else:
-            return 1
+            return False
     #
     def cancel_order(self, product_name:str, session:str) -> bool:
         """Cancels an order registered in the database. Returns True if successful or if order does not exist and False if user does not have the permssion to do this."""
