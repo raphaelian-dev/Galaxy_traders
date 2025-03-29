@@ -1,3 +1,3 @@
 # License
 
-This software is under **All Rights Reserved**.
+© 2025 raphaelian-dev. All Rights Reserved.
